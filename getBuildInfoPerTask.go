@@ -25,10 +25,33 @@ func GetBuildInfoPerASIC() {
 
 }
 
-func convertToJSON() {
+func ConvertToJson()
 
-	xml, err := os.Open("./navi10_buildinfo.xml")
-	if err != nil {
-		log.Fatal("Failed to open file ", err)
-	}
+    cmd := exec.Command("/bin/bash", "-c", `cat navi10_buildinfo.xml | sed 's/<\/fullDisplayName>/\n/g' | sed 's/<\/allBuild>.*//' | sed '/xml/d' | sed '/workflow/d'`);
+
+    stdout,err := cmd.StdoutPipe()
+    if err!= nil {
+        log.Fatal("Error: can't obtain atdout pipe for command", err)
+        return
+    }
+
+    if err := cmd.Start(); err != nill {
+        log.Fatal("Error: The command is err", err)
+        return
+    }
+
+    outputBuf := bufio.NewReader(stdout)
+
+    for {
+      output, _, err := outputBuf.ReadLine()
+
+      if err != nil{
+        if err.Error() != "EOF" {
+          log.Fatal("Error, %s\n", err)
+        }
+        return
+      }
+
+      log.Printf("%s\n", string(output))
+    }
 }
