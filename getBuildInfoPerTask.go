@@ -1,6 +1,7 @@
 package reportanalyzer
 
 import (
+    "bufio"
 	"log"
 	"os"
 	"os/exec"
@@ -25,7 +26,7 @@ func GetBuildInfoPerASIC() {
 
 }
 
-func ConvertToJson()
+func ConvertToJson() {
 
     cmd := exec.Command("/bin/bash", "-c", `cat navi10_buildinfo.xml | sed 's/<\/fullDisplayName>/\n/g' | sed 's/<\/allBuild>.*//' | sed '/xml/d' | sed '/workflow/d'`);
 
@@ -35,7 +36,7 @@ func ConvertToJson()
         return
     }
 
-    if err := cmd.Start(); err != nill {
+    if err := cmd.Start(); err != nil {
         log.Fatal("Error: The command is err", err)
         return
     }
