@@ -18,7 +18,7 @@ func wget(url, filepath string) error {
 //GetBuildInfoPerASIC Get build info from Jenkins build page
 func GetBuildInfoPerASIC() {
 
-	url := "http://10.67.69.71:8080/job/amd-staging-dkms-sustaining-dGPU/job/sanity-test/job/bare-metal-pro-gfx/api/xml?tree=allBuilds[description,fullDisplayName,id,timestamp]&exclude=//allBuild[not(contains(description,navi10))]"
+    url := "http://10.67.69.71:8080/job/amd-staging-dkms-sustaining-dGPU/job/sanity-test/job/bare-metal-pro-gfx/api/xml?tree=allBuilds[description,fullDisplayName,id,timestamp]&exclude=//allBuild[not(contains(description,%22navi10%22))]"
 	filepath := "./navi10_buildinfo" + ".xml"
 	if err := wget(url, filepath); err != nil {
 		log.Fatal(err)
@@ -28,7 +28,7 @@ func GetBuildInfoPerASIC() {
 
 func ConvertToJson() {
 
-    cmd := exec.Command("/bin/bash", "-c", `cat navi10_buildinfo.xml | sed 's/<\/fullDisplayName>/\n/g' | sed 's/<\/allBuild>.*//' | sed '/xml/d' | sed '/workflow/d'`);
+    cmd := exec.Command("/bin/bash", "-c", `cat navi10_buildinfo.xml | sed 's/<\/fullDisplayName>/\n/g' | sed 's/<\/allBuild>.*//' | sed '/xml/d' | sed '/workflow/d' | tee navi10.xml`);
 
     stdout,err := cmd.StdoutPipe()
     if err!= nil {
